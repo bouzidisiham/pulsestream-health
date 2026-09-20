@@ -1,0 +1,65 @@
+## ENVIRONNEMENT VIRTUEL 
+.venv/
+venv/
+env/
+ENV/
+pyvenv.cfg
+
+## CACHES PYTHON
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+
+## PACKAGING PYTHON
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+## TEST / COVERAGE
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+## SPARK
+spark-warehouse/
+metastore_db/
+derby.log
+*.crc
+checkpoint/
+
+
+## DATA
+data/raw/*
+!data/raw/.gitkeep
+
+data/bronze/*
+!data/bronze/.gitkeep
+
+data/silver/*
+!data/silver/.gitkeep
+
+data/gold/*
+!data/gold/.gitkeep
+
+## IDE
+.vscode/*
+.idea/
+*.swp
+
+## OS 
+Thumbs.db
+.DS_Store
+
+## LOGS
+*.log
+
+## VARIABLES D ENVIRONNEMENT
+.env
