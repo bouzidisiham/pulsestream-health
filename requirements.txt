@@ -1,7 +1,0 @@
-# === Production ===
-pyspark==4.0.4
-Faker==40.39.0
-
-# === Dev / Tests ===
-pytest==9.1.1
-chispa==0.12.0
