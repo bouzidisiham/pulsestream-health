@@ -50,7 +50,7 @@ pip install -e ".[dev]"
 - [x] Structure du projet
 - [x] Dépendances (requirements)
 - [x] .gitignore
-- [ ] Générateur de données synthétiques
+- [x] Générateur de données synthétiques
 - [ ] Pipeline batch (bronze → silver → gold)
 - [ ] Détection d'anomalies
 - [ ] Structured Streaming
