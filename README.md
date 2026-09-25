@@ -1,4 +1,4 @@
-# PulseStream Health 
+# PulseStream Health
 Un pipeline de surveillance santé en temps réel avec PySpark (batch + streaming)
 
 ## Description : 
@@ -10,6 +10,7 @@ Un pipeline de surveillance santé en temps réel avec PySpark (batch + streamin
 - Python 3.13
 - PySpark 4.0.4
 - Java 21 (JDK)
+- Streamlit (interface interactive)
 - Parquet
 - pytest + chispa
 - GitHub Actions (à venir)
@@ -22,12 +23,18 @@ Un pipeline de surveillance santé en temps réel avec PySpark (batch + streamin
 
 ```
 pulsestream-health/
-├── src/pulsestream/    # Code source réutilisable
-├── tests/              # Tests unitaires
-├── scripts/            # Scripts CLI
-├── data/               # Données (bronze/silver/gold)
-├── notebooks/          # Exploration
-└── docs/               # Documentation
+├── src/pulsestream/ # Code source réutilisable
+│ ├── ingestion/ # Génération et écriture des données
+│ ├── transformations/ # Nettoyage, enrichissement
+│ ├── analytics/ # Jointures, agrégations
+│ ├── streaming/ # Structured Streaming
+│ └── utils/ # Helpers (Spark, config)
+├── app/ # Interface Streamlit
+├── tests/ # Tests unitaires
+├── scripts/ # Scripts CLI
+├── data/ # Données (bronze / silver / gold)
+├── notebooks/ # Exploration
+└── docs/ # Documentation        
 ```
 
 ## Installation : 
@@ -40,20 +47,44 @@ pip install -e ".[dev]"
 ```
 
 ## Utilisation : 
-- Générer les données : *(à venir)*
+- Générer les données :  `python scripts/generate_data.py --n-patients 200 --days 7`
 - Lancer le batch : *(à venir)*
 - Lancer le streaming : *(à venir)*
+
+### Interface Streamlit
+
+(à venir)
+
+Une interface interactive permettra d'explorer les résultats du pipeline :
+
+- **Vue d'ensemble** : KPIs (patients, mesures, anomalies)
+- **Patients** : exploration par sexe, âge, IMC, antécédents
+- **Signes vitaux** : séries temporelles et distributions
+- **Anomalies** : détection et analyse des cas critiques
+
+Commande prévue :
+
+```bash
+streamlit run app/app.py
+```
 
 ## Tests : *(à venir)*
 
 ## Roadmap : 
 - [x] Structure du projet
-- [x] Dépendances (requirements)
+- [x] Dépendances (pyproject.toml)
 - [x] .gitignore
 - [x] Générateur de données synthétiques
-- [ ] Pipeline batch (bronze → silver → gold)
-- [ ] Détection d'anomalies
+- [x] Lecture Spark avec schémas DDL
+- [x] Module de nettoyage (9 fonctions)
+- [x] Jointures (broadcast)
+- [ ] Agrégations (groupBy, agg)
+- [ ] Window functions
+- [ ] SQL + createOrReplaceTempView
+- [ ] I/O Parquet
+- [ ] Détection d'anomalies avancée
 - [ ] Structured Streaming
+- [ ] Interface Streamlit
 - [ ] Tests unitaires (pytest + chispa)
 - [ ] CI/CD GitHub Actions
 - [ ] Diagramme d'architecture
