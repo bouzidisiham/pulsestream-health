@@ -35,6 +35,14 @@ VILLES = [
 ]
 
 def generate_patients(n: int) -> list[dict]:
+    """
+    Génère n patients synthétiques avec des identités et profils cohérents.
+    Args:
+        n: Nombre de patients à générer.
+
+    Returns:
+        Une liste de dictionnaires, un par patient.
+    """
     patients = []
     for i in range(n):
 
@@ -91,6 +99,18 @@ def generate_patients(n: int) -> list[dict]:
 
 
 def generate_vitals(id_patient: str, start: datetime, n_mesures: int) -> list[dict]:
+    """
+    Génère les signes vitaux d'un patient sur une période donnée.
+
+    Args:
+        id_patient: Identifiant du patient (ex: "PAT-0001").
+        start: Date et heure de la première mesure.
+        n_mesures: Nombre de mesures à générer.
+
+    Returns:
+        Une liste de dictionnaires, un par mesure.
+    """
+    
     vitals = []    
 
     baseline_fc = random.gauss(80, 10)
@@ -142,7 +162,16 @@ def generate_vitals(id_patient: str, start: datetime, n_mesures: int) -> list[di
 
 
 def generate_all_data(n: int, start: datetime, n_mesures: int) -> tuple[list[dict], list[dict]] :
+    """Orchestre la génération complète des données du projet.
+    Args:
+        n: Nombre de patients à générer.
+        start: Date et heure de début des mesures.
+        n_mesures: Nombre de mesures par patient.
 
+    Returns:
+        Un tuple (patients, vitals) contenant les deux listes de dicts.
+    """
+    
     patients = generate_patients(n)
     vitals = []
 

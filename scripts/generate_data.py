@@ -5,7 +5,20 @@ from pathlib import Path
 from pulsestream.ingestion.generator import generate_all_data
 from pulsestream.ingestion.writer import write_csv, write_json
 
-def main() : 
+"""Point d'entrée CLI pour générer les données synthétiques du projet.
+
+Usage :
+    python scripts/generate_data.py --n-patients 200 --days 7
+
+Produit quatre fichiers dans data/raw/ :
+- patients.csv, patients.json
+- vitals.csv, vitals.json
+"""
+
+def main() :
+    """Génère les données et les écrit dans data/raw/.
+    """
+         
     parser = argparse.ArgumentParser(
         description="Génère les données synthétiques du projet PulseStream"
     )
