@@ -1,6 +1,6 @@
 from faker import Faker
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 fake = Faker("fr_FR")
 
@@ -44,6 +44,7 @@ def generate_patients(n: int) -> list[dict]:
         Une liste de dictionnaires, un par patient.
     """
     patients = []
+
     for i in range(n):
 
         id_patient = f"PAT-{i+1:04d}"
@@ -56,6 +57,7 @@ def generate_patients(n: int) -> list[dict]:
             prenom = fake.first_name_male()
 
         nom = fake.last_name()
+
         date_naissance = fake.date_of_birth(minimum_age=18, maximum_age=90).isoformat()
 
         groupe_sanguin = random.choice(GS)
@@ -98,28 +100,49 @@ def generate_patients(n: int) -> list[dict]:
 
 
 
-def generate_vitals(id_patient: str, start: datetime, n_mesures: int) -> list[dict]:
+def generate_vitals(patient: dict, start: datetime, n_mesures: int) -> list[dict]:
     """
     Génère les signes vitaux d'un patient sur une période donnée.
-
+    
     Args:
-        id_patient: Identifiant du patient (ex: "PAT-0001").
+        patient: Dictionnaire de type patient.
         start: Date et heure de la première mesure.
         n_mesures: Nombre de mesures à générer.
 
     Returns:
         Une liste de dictionnaires, un par mesure.
     """
-    
-    vitals = []    
+    id_patient = patient["id_patient"] 
+    vitals = []
 
-    baseline_fc = random.gauss(80, 10)
-    baseline_sys = random.gauss(115, 8)      
-    baseline_dia = random.gauss(75, 6)       
+    date_naissance = date.fromisoformat(patient["date_naissance"])
+    age = (date.today() - date_naissance).days // 365
+    
+    taille_m = patient["taille_cm"] / 100
+    imc = patient["poids_kg"] / (taille_m ** 2)
+
+    if patient["sexe"] == "F":
+        baseline_fc = random.gauss(82, 10)
+    else:
+        baseline_fc = random.gauss(76, 10)
+
+
+    baseline_sys = random.gauss(115, 8)       
     baseline_temp = random.gauss(36.8, 0.3)
     baseline_spo2 = random.gauss(97.5, 1.5)
 
-    for i in range(n_mesures) : 
+
+    if age < 40:
+        facteur = 1.0
+    elif age < 60:
+        facteur = 1.5
+    elif age < 75:
+        facteur = 2.5
+    else:
+        facteur = 3.4
+
+    for i in range(n_mesures) :
+         
         jitter = random.randint(-10,10)
         horodatage = (start + timedelta(hours=2*i) + timedelta(minutes=jitter)).isoformat()
 
@@ -144,8 +167,15 @@ def generate_vitals(id_patient: str, start: datetime, n_mesures: int) -> list[di
         spo2 = int(round(spo2))
 
         
-        if random.random() < 0.05 :
-            anomalie = random.randint(1,3)
+        if random.random() < (0.05 * facteur) :
+
+            if imc < 30 : 
+                weights = [1, 1, 1]
+            else : 
+                weights = [1, 2, 1]
+
+            anomalie = random.choices([1, 2, 3], weights=weights)[0]
+            
             if anomalie == 1 :
                 temp = random.uniform(38.5, 40.0)
                 temp = round(temp, 1)
@@ -176,9 +206,8 @@ def generate_all_data(n: int, start: datetime, n_mesures: int) -> tuple[list[dic
     vitals = []
 
     for patient in patients :
-
-        id_patient = patient['id_patient']
-        vitals_i = generate_vitals(id_patient,start,n_mesures)
+        
+        vitals_i = generate_vitals(patient,start,n_mesures)
 
         vitals.extend(vitals_i)
 
