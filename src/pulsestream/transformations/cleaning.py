@@ -89,12 +89,12 @@ def validate_groupe_sanguin(df: DataFrame) -> DataFrame:
     """Filtrer les lignes dont groupe_sanguin n’est pas dans la liste officielle.
     
     Args:
-        df: DataFrame des signes vitaux.
+        df: DataFrame des patients.
 
     Returns:
         DataFrame filtré.
     """
-    return df.filter(~F.col("groupe_sanguin").isin(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]))
+    return df.filter(F.col("groupe_sanguin").isin(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]))
 
 def handle_nulls_vitals(df: DataFrame) -> DataFrame:
     """Supprime les mesures sans id_patient ou sans horodatage.
@@ -128,15 +128,24 @@ def add_anomaly_flag(df: DataFrame) -> DataFrame:
         DataFrame avec la colonne est_anomalie (booléenne).
     """
     est_tachycardie = (
-        (F.col("frequence_cardiaque") > 100) |
+        (F.col("frequence_cardiaque") > 100) 
+    )
+    est_bradycardie = (
         (F.col("frequence_cardiaque") < 50) 
     )
-    est_dysfonction_tension = (
+    est_hypertension = (
         (F.col("tension_systolique") > 140) |
-        (F.col("tension_systolique") < 90) 
+        (F.col("tension_diastolique") > 90)
+    )
+
+    est_hypotension = (
+        (F.col("tension_systolique") < 90) |
+        (F.col("tension_diastolique") < 60)
     )
     est_fievre = (
-        (F.col("temperature") > 38.0) |
+        (F.col("temperature") > 38.0)
+    )
+    est_hypothermie = (
         (F.col("temperature") < 36.0) 
     )
     est_desaturation = (
@@ -144,10 +153,13 @@ def add_anomaly_flag(df: DataFrame) -> DataFrame:
     )
 
     return (df.withColumn("est_tachycardie", est_tachycardie)
-            .withColumn("est_dysfonction_tension", est_dysfonction_tension)
+            .withColumn("est_bradycardie",est_bradycardie)
+            .withColumn("est_hypertension", est_hypertension)
+            .withColumn("est_hypotension", est_hypotension)
             .withColumn("est_fievre", est_fievre)
+            .withColumn("est_hypothermie", est_hypothermie)
             .withColumn("est_desaturation", est_desaturation)
-            .withColumn("est_anomalie", est_tachycardie | est_dysfonction_tension | est_fievre | est_desaturation))
+            .withColumn("est_anomalie", est_tachycardie | est_bradycardie | est_hypertension | est_hypotension | est_fievre | est_hypothermie | est_desaturation))
 
 def check_orphan_vitals(vitals_df : DataFrame, patients_df : DataFrame) -> DataFrame: 
     """Retourne les mesures (vitals) dont l'id_patient n'existe pas dans la table des patients. Utilise une jointure left_anti : le résultat
