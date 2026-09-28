@@ -19,6 +19,18 @@ def drop_duplicates(df: DataFrame, subset: list[str]) -> DataFrame:
     """
     return df.dropDuplicates(subset)
 
+def validate_id_patient(df: DataFrame) -> DataFrame:
+    """Garde uniquement les patients dont l'id_patient respecte le format PAT-XXXX.
+    Args:
+        df: DataFrame des patients.
+    
+    Returns:
+        DataFrame filtré sur les IDs valides.
+    """
+    pattern = r"^PAT-\d{4}$"
+    return df.filter(F.col("id_patient").rlike(pattern))
+    
+
 def trim_strings_patients(df: DataFrame) -> DataFrame:
     """Nettoie les espaces en début et fin des chaînes de caractères.
 
@@ -73,6 +85,17 @@ def enrich_patients(df: DataFrame) -> DataFrame:
     ]
     return df.select(*ordre)
 
+def validate_groupe_sanguin(df: DataFrame) -> DataFrame:
+    """Filtrer les lignes dont groupe_sanguin n’est pas dans la liste officielle.
+    
+    Args:
+        df: DataFrame des signes vitaux.
+
+    Returns:
+        DataFrame filtré.
+    """
+    return df.filter(~F.col("groupe_sanguin").isin(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]))
+
 def handle_nulls_vitals(df: DataFrame) -> DataFrame:
     """Supprime les mesures sans id_patient ou sans horodatage.
 
@@ -104,16 +127,39 @@ def add_anomaly_flag(df: DataFrame) -> DataFrame:
     Returns:
         DataFrame avec la colonne est_anomalie (booléenne).
     """
-    anomalie = (
+    est_tachycardie = (
         (F.col("frequence_cardiaque") > 100) |
-        (F.col("frequence_cardiaque") < 50) |
-        (F.col("tension_systolique") > 140) |
-        (F.col("tension_systolique") < 90) |
-        (F.col("temperature") > 38.0) |
-        (F.col("temperature") < 36.0) |
-        (F.col("saturation_oxygene") < 92)
+        (F.col("frequence_cardiaque") < 50) 
     )
-    return df.withColumn("est_anomalie", anomalie)
+    est_dysfonction_tension = (
+        (F.col("tension_systolique") > 140) |
+        (F.col("tension_systolique") < 90) 
+    )
+    est_fievre = (
+        (F.col("temperature") > 38.0) |
+        (F.col("temperature") < 36.0) 
+    )
+    est_desaturation = (
+        (F.col("saturation_oxygene") < 92)     
+    )
 
-def check_referential_integrity(vitals_df : DataFrame, patients_df : DataFrame) -> DataFrame: 
+    return (df.withColumn("est_tachycardie", est_tachycardie)
+            .withColumn("est_dysfonction_tension", est_dysfonction_tension)
+            .withColumn("est_fievre", est_fievre)
+            .withColumn("est_desaturation", est_desaturation)
+            .withColumn("est_anomalie", est_tachycardie | est_dysfonction_tension | est_fievre | est_desaturation))
+
+def check_orphan_vitals(vitals_df : DataFrame, patients_df : DataFrame) -> DataFrame: 
+    """Retourne les mesures (vitals) dont l'id_patient n'existe pas dans la table des patients. Utilise une jointure left_anti : le résultat
+    (intégrité référentielle)
+
+    Args:
+        vitals_df (DataFrame): DataFrame des mesures de signes vitaux.
+        patients_df (DataFrame): DataFrame des patients.
+
+    Returns:
+        DataFrame: Sous-ensemble de ``vitals_df`` contenant uniquement
+        les lignes dont l'``id_patient`` est absent de ``patients_df``.
+        Un DataFrame vide signifie que l'intégrité est respectée.
+    """
     return vitals_df.join(patients_df, "id_patient", "left_anti")
