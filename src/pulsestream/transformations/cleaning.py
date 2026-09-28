@@ -119,7 +119,7 @@ def validate_tension_vitals(df: DataFrame) -> DataFrame:
     return df.filter(F.col("tension_systolique") > F.col("tension_diastolique"))
 
 def add_anomaly_flag(df: DataFrame) -> DataFrame:
-    """Ajoute une colonne booléenne est_anomalie.
+    """Ajoute une colonne booléenne est_anomalie et ajoute un flag pour chaque anomalie
 
     Args:
         df: DataFrame des signes vitaux.
