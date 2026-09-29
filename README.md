@@ -4,12 +4,12 @@
 
 Un pipeline de surveillance santé en temps réel avec PySpark (batch + streaming)
 
-## Description : 
+## Description 
 - **Quoi ?** Un pipeline de surveillance des signes vitaux.
 - **Comment ?** Génération de données synthétiques avec Faker, traitement avec PySpark (batch et Structured Streaming), détection d'anomalies.
 - **Pour qui ?** Projet portfolio démontrant les compétences d'un Data Engineer (ETL, streaming, tests, CI/CD).
 
-## Stack :
+## Stack
 - Python 3.13
 - PySpark 4.0.4
 - Java 21 (JDK)
@@ -40,7 +40,7 @@ pulsestream-health/
 └── docs/ # Documentation        
 ```
 
-## Installation : 
+## Installation
 ```bash
 git clone ...
 cd pulsestream-health
@@ -49,7 +49,7 @@ python -m venv .venv
 pip install -e ".[dev]"
 ```
 
-## Utilisation : 
+## Utilisation
 - Générer les données :  `python scripts/generate_data.py --n-patients 200 --days 7`
 - Lancer le batch : *(à venir)*
 - Lancer le streaming : *(à venir)*
@@ -71,12 +71,14 @@ Commande prévue :
 streamlit run app/app.py
 ```
 
-## Tests : 
+## Tests
 ```bash
 pytest -v
 ```
+Tests unitaires avec pytest et chispa (comparaison de DataFrames Spark).
 
-## Roadmap : 
+
+## Roadmap 
 - [x] Structure du projet
 - [x] Dépendances (pyproject.toml)
 - [x] .gitignore
@@ -91,8 +93,8 @@ pytest -v
 - [ ] Détection d'anomalies avancée
 - [ ] Structured Streaming
 - [ ] Interface Streamlit
-- [ ] Tests unitaires (pytest + chispa)
-- [ ] CI/CD GitHub Actions
+- [x] Tests unitaires (pytest + chispa)
+- [x] CI/CD GitHub Actions
 - [ ] Diagramme d'architecture
 - [ ] Documentation finale
 
