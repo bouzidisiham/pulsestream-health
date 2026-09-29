@@ -1,4 +1,7 @@
 # PulseStream Health
+
+![CI](https://github.com/bouzidisiham/pulsestream-health/actions/workflows/ci.yml/badge.svg)
+
 Un pipeline de surveillance santé en temps réel avec PySpark (batch + streaming)
 
 ## Description : 
@@ -13,11 +16,11 @@ Un pipeline de surveillance santé en temps réel avec PySpark (batch + streamin
 - Streamlit (interface interactive)
 - Parquet
 - pytest + chispa
-- GitHub Actions (à venir)
+- GitHub Actions
 - Faker
 
 ## Architecture : 
-> ⚠️ Diagramme à venir
+> Diagramme à venir
 
 ## Structure du projet
 
@@ -68,7 +71,10 @@ Commande prévue :
 streamlit run app/app.py
 ```
 
-## Tests : *(à venir)*
+## Tests : 
+```bash
+pytest -v
+```
 
 ## Roadmap : 
 - [x] Structure du projet
