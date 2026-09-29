@@ -222,7 +222,7 @@ def test_add_anomaly_flag(spark):
     """add_anomaly_flag doit ajouter une colonne booléenne est_anomalie et ajoute un flag pour chaque anomalie
     """
     df = spark.createDataFrame([
-        Row(id_patient="P1", frequence_cardiaque=101, tension_systolique=120, tension_diastolique=80, temperature=37.0, saturation_oxygene=98),
+        Row(id_patient="P1", frequence_cardiaque=115, tension_systolique=120, tension_diastolique=80, temperature=37.0, saturation_oxygene=98),
         Row(id_patient="P2", frequence_cardiaque=40, tension_systolique=120, tension_diastolique=80, temperature=37.0, saturation_oxygene=98),
         Row(id_patient="P3", frequence_cardiaque=75, tension_systolique=120, tension_diastolique=54, temperature=37.0, saturation_oxygene=98),
         Row(id_patient="P4", frequence_cardiaque=75, tension_systolique=159, tension_diastolique=80, temperature=37.0, saturation_oxygene=98),

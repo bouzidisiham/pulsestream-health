@@ -127,30 +127,13 @@ def add_anomaly_flag(df: DataFrame) -> DataFrame:
     Returns:
         DataFrame avec la colonne est_anomalie (booléenne).
     """
-    est_tachycardie = (
-        (F.col("frequence_cardiaque") > 100) 
-    )
-    est_bradycardie = (
-        (F.col("frequence_cardiaque") < 50) 
-    )
-    est_hypertension = (
-        (F.col("tension_systolique") > 140) |
-        (F.col("tension_diastolique") > 90)
-    )
-
-    est_hypotension = (
-        (F.col("tension_systolique") < 90) |
-        (F.col("tension_diastolique") < 60)
-    )
-    est_fievre = (
-        (F.col("temperature") > 38.0)
-    )
-    est_hypothermie = (
-        (F.col("temperature") < 36.0) 
-    )
-    est_desaturation = (
-        (F.col("saturation_oxygene") < 92)     
-    )
+    est_tachycardie = F.col("frequence_cardiaque") >= 110
+    est_bradycardie = F.col("frequence_cardiaque") < 50
+    est_hypertension = (F.col("tension_systolique") > 140) | (F.col("tension_diastolique") > 90)
+    est_hypotension = (F.col("tension_systolique") < 90) | (F.col("tension_diastolique") < 60)
+    est_fievre = F.col("temperature") >= 38.5
+    est_hypothermie = F.col("temperature") < 36.0
+    est_desaturation = F.col("saturation_oxygene") < 92
 
     return (df.withColumn("est_tachycardie", est_tachycardie)
             .withColumn("est_bradycardie",est_bradycardie)
